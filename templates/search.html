@@ -1,0 +1,110 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load mathfilters %}
+
+{% block title %}Event Search{% endblock title %}
+
+{% block breadcrumb %}
+    <div>
+        <h1><i class="fa fa-search"></i> Search</h1>
+        <p>Event Search</p>
+    </div>
+    <div class="dropdown">
+            <span class="h5 mr-2 text-secondary">Search by: </span>
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Time
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#" data-value="Time">Time</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#" data-value="Title">Title</a>
+            </div>
+    </div>
+    <form id="form-time" method="POST" role="search" action="search" class="form-inline">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for=""><span class="h5 mr-2 text-secondary">From: </span></label>
+            <input class="form-control" type="datetime-local" placeholder="From date" aria-label="Search" name="fromDate">
+        </div>
+        <div class="form-group">
+            <label for=""><span class="h5 mr-2 text-secondary">To: </span></label>
+            <input class="form-control" type="datetime-local" placeholder="To date" aria-label="Search" name="toDate"> 
+        </div>
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+    </form>
+
+    <form id="form-title" method="POST" role="search" action="searchTitle" class="form-inline">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="inputTitle"><span class="h5 mr-2 text-secondary">Title: </span></label>
+            <input class="form-control" id="inputTitle" type="text" placeholder="Title" aria-label="Search" name="title"> 
+        </div>
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+    </form>
+
+    <ul class="app-breadcrumb breadcrumb">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item"><a href="#">Search</a></li>
+    </ul>
+{% endblock breadcrumb %}
+{% block content %}
+<div class="col-md-12">
+    <div class="tile">
+        <div class="tile-body">
+            <div class="table-responsive">
+                <div id="sampleTable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4 no-footer">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-hover table-bordered dataTable no-footer" id="sampleTable" role="grid" aria-describedby="sampleTable_info">
+                                <thead>
+                                    <tr role="row">
+                                        <th class="sorting_asc" tabindex="0" aria-controls="sampleTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 102.641px;">SL</th>
+                                        <th class="sorting" tabindex="0" aria-controls="sampleTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 417.312px;">Event Name</th>
+                                        <th class="sorting" tabindex="0" aria-controls="sampleTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 417.312px;">Description</th>
+                                        <th class="sorting" tabindex="0" aria-controls="sampleTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 189.281px;">Start Time</th>
+                                        <th class="sorting" tabindex="0" aria-controls="sampleTable" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 189.281px;">End Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for event in events_filter %}
+                                        <tr role="row" class="odd">
+                                            <td class="sorting_1">{{ forloop.counter }}</td>
+                                            <td>{{ event.title }}</td>
+                                            <td>{{ event.description }}</td>
+                                            <td>{{ event.start_time }}</td>
+                                            <td>{{ event.end_time }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extrascripts %}
+    <script type="text/javascript" src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/dataTables.bootstrap.min.js' %}"></script>
+    <script type="text/javascript">$('#sampleTable').DataTable();</script>
+    <script>
+        $(document).ready(function () {
+            $(".dropdown-item").click(function () {
+                const selectedValue = $(this).data("value");
+                $("#dropdownMenuButton").text(selectedValue);
+                if(selectedValue == "Title"){
+                $("#form-time").hide();
+                $("#form-title").show();
+            }
+            else{
+                $("#form-time").show();
+                $("#form-title").hide();
+            }
+            });
+            $("#form-title").hide();
+        });
+    </script>
+{% endblock extrascripts %}

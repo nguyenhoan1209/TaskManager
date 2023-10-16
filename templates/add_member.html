@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Add EventMember
+{% endblock %}
+
+{% block content %}
+<div class="clearfix">
+  <a class="btn btn-info left" href="{% url 'calendarapp:calendar' %}"> Calendar </a>
+</div>
+
+<form method="post">
+  {% csrf_token %}
+  <table class="form form-table">
+    {{ form }}
+    <tr><td colspan="2"><button type="submit" class="btn btn-info right"> Submit </button></td></tr>
+  </table>
+</form>
+
+<div class="container">
+
+  <div class="clearfix">
+      <h3>Event Name: {{ event.title }}</h3>
+      <p>From <span style="color: gray;">{{ event.start_time }}</span> To <span style="color: gray;">{{ event.end_time }}</span></p>
+      <hr>
+      <p>{{ event.description }}</p>
+  </div>
+  <hr>
+  <table class="table table-bordered">
+      <thead>
+          <tr>
+            <th style="width: 10px">#</th>
+            <th>Email</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for member in eventmember %}
+          <form  method="post" id="formDelete" action="/event_member/{{member.id}}/remove">
+          {% csrf_token %}
+          <tr role="row">
+              <td>{{ forloop.counter }}</td>
+              <td>{{ member.user.email }}</td>
+              <td>
+                  <button class="btn btn-danger" type="submit">Remove</button>
+              </td>
+          </tr>
+        </form>
+          {% endfor %}
+        </tbody>
+  </table>
+</div>
+{% endblock %}
