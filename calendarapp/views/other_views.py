@@ -1,5 +1,4 @@
 # cal/views.py
-
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.views import generic
@@ -205,4 +204,5 @@ class CalendarViewNew(LoginRequiredMixin, generic.View):
             form.save()
             return redirect("calendarapp:calendar")
         context = {"form": forms}
+        
         return render(request, self.template_name, context)
